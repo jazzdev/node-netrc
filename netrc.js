@@ -1,0 +1,70 @@
+/*!
+ * netrc
+ *
+ * Copyright(c) 2012 JD Brennan <jazzdev@gmail.com>
+ * MIT License
+ */
+
+var fs = require('fs');
+
+exports = module.exports = new NetRC();
+
+function NetRC() {
+    this.filename = process.env.HOME + "/.netrc";
+    this.machines = null;
+}
+
+NetRC.prototype.file = function(filename) {
+    this.filename = filename;
+}
+
+NetRC.prototype.host = function(hostname) {
+    if (this.machines === null) {
+        this.init();
+    }
+    if (!this.machines[hostname]) this.error("Machine " + hostname + " not found in " + this.filename);
+    return this.machines[hostname];
+}
+
+NetRC.prototype.init = function() {
+    if (!fs.existsSync(this.filename)) this.error("File does not exist: " + this.filename);
+    this.machines = {};
+    var data = fs.readFileSync(this.filename, "UTF-8");
+
+    // Remove comments
+    var lines = data.split('\n');
+    for (var n in lines) {
+        var i = lines[n].indexOf('#');
+        if (i > -1) lines[n] = lines[n].substring(0,i);
+    }
+    data = lines.join('\n');
+
+    var tokens = data.split(/[ \t\n\r]+/);
+    var machine = new Machine();
+    var key = null;
+    for (var i in tokens) {
+        if (!key) {
+            key = tokens[i];
+            if (key === 'machine') {
+                this.machines[machine.machine] = machine;
+                machine = new Machine();
+            }
+        } else {
+            machine[key] = tokens[i];
+            key = null;
+        }
+    }
+    this.machines[machine.machine] = machine;
+}
+
+NetRC.prototype.error = function(message) {
+    console.error("netrc: Error:", message);
+    process.exit(1);
+}
+
+function Machine() {
+    this.machine = 'empty';
+    this.login = null;
+    this.password = null;
+    this.account = null;
+}
