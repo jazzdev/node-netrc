@@ -50,11 +50,23 @@ NetRC.prototype.init = function() {
                 machine = new Machine();
             }
         } else {
-            machine[key] = tokens[i];
+            machine[key] = this.unescape(tokens[i]);
             key = null;
         }
     }
     this.machines[machine.machine] = machine;
+}
+
+
+// Allow spaces and other weird characters in passwords by supporting \xHH
+NetRC.prototype.unescape = function(s) {
+    var match = /\\x([0-9a-fA-F]{2})/.exec(s);
+    if (match) {
+        s = s.substr(0,match.index)
+            + String.fromCharCode(parseInt(match[1], 16))
+            + s.substr(match.index+4)
+    }
+    return s;
 }
 
 NetRC.prototype.error = function(message) {
