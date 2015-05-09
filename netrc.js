@@ -92,6 +92,26 @@ NetRC.prototype.write = function() {
     fs.writeFileSync(this.filename, data);
 };
 
+NetRC.prototype.addMachine = function (hostname, options) {
+    var self = this,
+        maxIndex = Math.max.apply(null, Object.keys(this.machines).map(function (key) {
+            return self.machines[key].index;
+        })) || 0,
+        machine;
+
+    if (this.machines[hostname]) this.error("Machine " + hostname + " already exists in " + this.filename);
+
+    machine = new Machine(maxIndex + 1);
+
+    machine.machine = name;
+
+    for(var key in options) {
+        machine[key] = options[key];
+    }
+
+    this.machines[machine.machine] = machine;
+};
+
 // Allow spaces and other weird characters in passwords by supporting \xHH
 NetRC.prototype.unescape = function(s) {
     var match = /\\x([0-9a-fA-F]{2})/.exec(s);
