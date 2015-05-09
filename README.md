@@ -1,26 +1,37 @@
 Description
 -----------
 
-A Node.js module to read your .netrc file.  So
+A Node.js module to read and write your .netrc file.  So
 you don't have to put passwords in all those Node.js
 CLI commands you are writing.
 
 Installation
 ------------
 
-    npm install https://github.com/jazzdev/node-netrc.git
+    npm install https://github.com/Teleborder/node-netrc.git
 
 Usage
 -----
 
     var netrc = require('netrc');
     
+    # read
     var pass = netrc.host('github.com').password;
+
+    # write
+    netrc.host('github.com').password = "mynewpass";
+    netrc.write();
 
 Dependencies
 ------------
 
 None.
+
+
+Testing
+-------
+    
+    npm test
 
 License
 -------
