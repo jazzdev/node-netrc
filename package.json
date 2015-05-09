@@ -1,0 +1,37 @@
+{
+  "name": "netrc",
+  "version": "0.0.1",
+  "description": ".netrc reader and writer",
+  "main": "netrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Teleborder/node-netrc.git"
+  },
+  "keywords": [
+    "netrc"
+  ],
+  "author": {
+    "name": "JD Brennan",
+    "email": "jazzdev@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Trey Griffith",
+      "email": "trey@tgriff3.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Teleborder/node-netrc/issues"
+  },
+  "homepage": "https://github.com/Teleborder/node-netrc",
+  "devDependencies": {
+    "mocha": "^2.2.4"
+  }
+}

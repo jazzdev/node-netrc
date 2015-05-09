@@ -1,13 +1,7 @@
-/*!
- * netrc
- *
- * Copyright(c) 2012 JD Brennan <jazzdev@gmail.com>
- * MIT License
- */
-
 var fs = require('fs');
 
 exports = module.exports = new NetRC();
+module.exports.NetRC = NetRC;
 
 function NetRC() {
     this.filename = process.env.HOME + "/.netrc";
@@ -45,14 +39,17 @@ NetRC.prototype.read = function() {
     data = lines.join('\n');
 
     var tokens = data.split(/[ \t\n\r]+/);
-    var machine = new Machine();
+    var machine;
     var key = null;
+    var index = 0;
     for (var i in tokens) {
         if (!key) {
             key = tokens[i];
             if (key === 'machine') {
-                this.machines[machine.machine] = machine;
-                machine = new Machine(machine.index + 1);
+                if (machine) {
+                    this.machines[machine.machine] = machine;
+                }
+                machine = new Machine(index++);
             }
         } else {
             machine[key] = this.unescape(tokens[i]);
@@ -63,8 +60,6 @@ NetRC.prototype.read = function() {
 };
 
 NetRC.prototype.write = function() {
-    if (!fs.existsSync(this.filename)) this.error("File does not exist: " + this.filename);
-
     var data = "",
         lines = [],
         machines = [];
@@ -77,7 +72,7 @@ NetRC.prototype.write = function() {
         lines.push("machine " + machine.machine);
         ['login', 'password', 'account', 'macdef'].forEach(function (key) {
             if(machine[key])
-                lines.push("\t " + key + " " + machine[key]);
+                lines.push("  " + key + " " + machine[key]);
         });
     });
 
@@ -93,6 +88,10 @@ NetRC.prototype.write = function() {
 };
 
 NetRC.prototype.addMachine = function (hostname, options) {
+    if (this.machines === null) {
+        this.read();
+    }
+
     var self = this,
         maxIndex = Math.max.apply(null, Object.keys(this.machines).map(function (key) {
             return self.machines[key].index;
@@ -103,7 +102,7 @@ NetRC.prototype.addMachine = function (hostname, options) {
 
     machine = new Machine(maxIndex + 1);
 
-    machine.machine = name;
+    machine.machine = hostname;
 
     for(var key in options) {
         machine[key] = options[key];
@@ -130,7 +129,7 @@ NetRC.prototype.error = function(message) {
 
 function Machine(index) {
     this.index = index || 0;
-    this.machine = 'empty';
+    this.machine = null;
     this.login = null;
     this.password = null;
     this.account = null;
