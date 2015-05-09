@@ -62,6 +62,36 @@ NetRC.prototype.read = function() {
     this.machines[machine.machine] = machine;
 };
 
+NetRC.prototype.write = function() {
+    if (!fs.existsSync(this.filename)) this.error("File does not exist: " + this.filename);
+
+    var data = "",
+        lines = [],
+        machines = [];
+
+    for(var key in this.machines) {
+        machines[this.machines[key].index] = this.machines[key];
+    }
+
+    machines.forEach(function (machine) {
+        lines.push("machine " + machine.machine);
+        ['login', 'password', 'account', 'macdef'].forEach(function (key) {
+            if(machine[key])
+                lines.push("\t " + key + " " + machine[key]);
+        });
+    });
+
+    for(var lineNumber in this.comments) {
+        for(var charNumber in this.comments[lineNumber]) {
+            lines[lineNumber] = insertInto(lines[lineNumber], this.comments[lineNumber][charNumber], charNumber);
+        }
+    }
+
+    data = lines.join('\n');
+
+    fs.writeFileSync(this.filename, data);
+};
+
 // Allow spaces and other weird characters in passwords by supporting \xHH
 NetRC.prototype.unescape = function(s) {
     var match = /\\x([0-9a-fA-F]{2})/.exec(s);
@@ -84,4 +114,9 @@ function Machine(index) {
     this.login = null;
     this.password = null;
     this.account = null;
+    this.macdef = null;
+}
+
+function insertInto(str, ins, at) {
+    return [str.slice(0, at), ins, str.slice(at)].join('');
 }
