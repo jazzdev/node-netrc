@@ -1,5 +1,5 @@
 {
-  "name": "netrc",
+  "name": "netrc-rw",
   "version": "0.0.1",
   "description": ".netrc reader and writer",
   "main": "netrc.js",
