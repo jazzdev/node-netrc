@@ -12,6 +12,7 @@ exports = module.exports = new NetRC();
 function NetRC() {
     this.filename = process.env.HOME + "/.netrc";
     this.machines = null;
+    this.comments = {};
 }
 
 NetRC.prototype.file = function(filename) {
@@ -35,7 +36,11 @@ NetRC.prototype.read = function() {
     var lines = data.split('\n');
     for (var n in lines) {
         var i = lines[n].indexOf('#');
-        if (i > -1) lines[n] = lines[n].substring(0,i);
+        if (i > -1) {
+            this.comments[n] = {};
+            this.comments[n][i] = lines[n].substring(i);
+            lines[n] = lines[n].substring(0,i);
+        }
     }
     data = lines.join('\n');
 
@@ -47,7 +52,7 @@ NetRC.prototype.read = function() {
             key = tokens[i];
             if (key === 'machine') {
                 this.machines[machine.machine] = machine;
-                machine = new Machine();
+                machine = new Machine(machine.index + 1);
             }
         } else {
             machine[key] = this.unescape(tokens[i]);
@@ -73,7 +78,8 @@ NetRC.prototype.error = function(message) {
     process.exit(1);
 };
 
-function Machine() {
+function Machine(index) {
+    this.index = index || 0;
     this.machine = 'empty';
     this.login = null;
     this.password = null;
