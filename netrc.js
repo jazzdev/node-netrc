@@ -16,17 +16,17 @@ function NetRC() {
 
 NetRC.prototype.file = function(filename) {
     this.filename = filename;
-}
+};
 
 NetRC.prototype.host = function(hostname) {
     if (this.machines === null) {
-        this.init();
+        this.read();
     }
     if (!this.machines[hostname]) this.error("Machine " + hostname + " not found in " + this.filename);
     return this.machines[hostname];
-}
+};
 
-NetRC.prototype.init = function() {
+NetRC.prototype.read = function() {
     if (!fs.existsSync(this.filename)) this.error("File does not exist: " + this.filename);
     this.machines = {};
     var data = fs.readFileSync(this.filename, "UTF-8");
@@ -55,24 +55,23 @@ NetRC.prototype.init = function() {
         }
     }
     this.machines[machine.machine] = machine;
-}
-
+};
 
 // Allow spaces and other weird characters in passwords by supporting \xHH
 NetRC.prototype.unescape = function(s) {
     var match = /\\x([0-9a-fA-F]{2})/.exec(s);
     if (match) {
-        s = s.substr(0,match.index)
-            + String.fromCharCode(parseInt(match[1], 16))
-            + s.substr(match.index+4)
+        s = s.substr(0,match.index) +
+            String.fromCharCode(parseInt(match[1], 16)) +
+            s.substr(match.index+4);
     }
     return s;
-}
+};
 
 NetRC.prototype.error = function(message) {
     console.error("netrc: Error:", message);
     process.exit(1);
-}
+};
 
 function Machine() {
     this.machine = 'empty';
