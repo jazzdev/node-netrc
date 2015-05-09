@@ -30,7 +30,7 @@ NetRC.prototype.host = function(hostname) {
 NetRC.prototype.read = function() {
     if (!fs.existsSync(this.filename)) this.error("File does not exist: " + this.filename);
     this.machines = {};
-    var data = fs.readFileSync(this.filename, "UTF-8");
+    var data = fs.readFileSync(this.filename, { encoding: "UTF-8" });
 
     // Remove comments
     var lines = data.split('\n');
