@@ -35,6 +35,13 @@ describe('netrc', function () {
     assert.equal(netrc.host("git.example.com").password, "86803bc8abbffd7fa4f203329ba55c4043f4db78");
   });
 
+  it("knows if a machine is in the .netrc", function () {
+    netrc.file(inputFilename);
+
+    assert.equal(netrc.hasHost("code.example.com"), true);
+    assert.equal(netrc.hasHost("blarg.com"), false);
+  });
+
   it("adds a machine to the .netrc representation", function () {
     netrc.file(inputFilename);
 

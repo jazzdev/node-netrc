@@ -15,11 +15,15 @@ NetRC.prototype.file = function(filename) {
 };
 
 NetRC.prototype.host = function(hostname) {
+    if(!this.hasHost(hostname)) this.error("Machine " + hostname + " not found in " + this.filename);
+    return this.machines[hostname];
+};
+
+NetRC.prototype.hasHost = function (hostname) {
     if (this.machines === null) {
         this.read();
     }
-    if (!this.machines[hostname]) this.error("Machine " + hostname + " not found in " + this.filename);
-    return this.machines[hostname];
+    return !!this.machines[hostname]
 };
 
 NetRC.prototype.read = function() {

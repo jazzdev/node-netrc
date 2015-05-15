@@ -1,6 +1,6 @@
 {
   "name": "netrc-rw",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": ".netrc reader and writer",
   "main": "netrc.js",
   "directories": {
