@@ -61,7 +61,9 @@ NetRC.prototype.read = function() {
             key = null;
         }
     }
-    this.machines[machine.machine] = machine;
+    if (machine && machine.machine) {
+        this.machines[machine.machine] = machine;
+    }
 };
 
 NetRC.prototype.write = function() {
@@ -98,9 +100,7 @@ NetRC.prototype.addMachine = function (hostname, options) {
     }
 
     var self = this,
-        maxIndex = Math.max.apply(null, Object.keys(this.machines).map(function (key) {
-            return self.machines[key].index;
-        })) || 0,
+        maxIndex = Object.keys(self.machines).length || 0,
         machine;
 
     if (this.machines[hostname]) this.error("Machine " + hostname + " already exists in " + this.filename);
