@@ -1,6 +1,6 @@
 {
   "name": "netrc-rw",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": ".netrc reader and writer",
   "main": "netrc.js",
   "directories": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/treygriffith/node-netrc.git"
+    "url": "https://github.com/treygriffith/netrc-rw.git"
   },
   "keywords": [
     "netrc"
@@ -28,9 +28,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/treygriffith/node-netrc/issues"
+    "url": "https://github.com/treygriffith/netrc-rw/issues"
   },
-  "homepage": "https://github.com/treygriffith/node-netrc",
+  "homepage": "https://github.com/treygriffith/netrc-rw",
   "devDependencies": {
     "mocha": "^2.2.4"
   }
