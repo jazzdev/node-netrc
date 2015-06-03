@@ -8,7 +8,11 @@ CLI commands you are writing.
 Installation
 ------------
 
-    npm install https://github.com/treygriffith/node-netrc.git
+    npm install netrc-rw
+
+or
+
+    npm install https://github.com/treygriffith/netrc-rw.git
 
 Usage
 -----
