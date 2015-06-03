@@ -61,7 +61,9 @@ NetRC.prototype.read = function() {
             key = null;
         }
     }
-    this.machines[machine.machine] = machine;
+    if (machine && machine.machine) {
+        this.machines[machine.machine] = machine;
+    }
 };
 
 NetRC.prototype.write = function() {
