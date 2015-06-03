@@ -8,7 +8,7 @@ CLI commands you are writing.
 Installation
 ------------
 
-    npm install https://github.com/Teleborder/node-netrc.git
+    npm install https://github.com/treygriffith/node-netrc.git
 
 Usage
 -----

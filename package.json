@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Teleborder/node-netrc.git"
+    "url": "https://github.com/treygriffith/node-netrc.git"
   },
   "keywords": [
     "netrc"
@@ -28,9 +28,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Teleborder/node-netrc/issues"
+    "url": "https://github.com/treygriffith/node-netrc/issues"
   },
-  "homepage": "https://github.com/Teleborder/node-netrc",
+  "homepage": "https://github.com/treygriffith/node-netrc",
   "devDependencies": {
     "mocha": "^2.2.4"
   }
