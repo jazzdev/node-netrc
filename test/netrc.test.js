@@ -35,7 +35,9 @@ describe('netrc', function () {
     assert.equal(netrc.host("api.example.com").password, "86802bc8abbffd7fa4f203329ba55c4043f4db78");
     assert.equal(netrc.host("git.example.com").login, "alice@git.example.com");
     assert.equal(netrc.host("git.example.com").password, "86803bc8abbffd7fa4f203329ba55c4043f4db78");
+  });
 
+  it("reads an empty .netrc file", function () {
     netrc.file(emptyFilename);
     netrc.read();
     assert.deepEqual(netrc.machines, {});
