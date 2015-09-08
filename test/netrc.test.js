@@ -129,7 +129,7 @@ describe('netrc', function () {
   })
 
   if (pkg.config.test.permissions) {
-    it("checks if the non-existing input netrc file exists and is readable", function () {
+    it("checks if the existing input netrc file is not readable due to permissions", function () {
       netrc.file(privateFilename);
       var isConfigReadable = netrc.isConfigReadable();
       if (isConfigReadable === true) {
