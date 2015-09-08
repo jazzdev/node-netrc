@@ -16,6 +16,11 @@
   "keywords": [
     "netrc"
   ],
+  "config": {
+    "test": {
+      "permissions": false
+    }
+  },
   "author": {
     "name": "JD Brennan",
     "email": "jazzdev@gmail.com"

@@ -1,20 +1,23 @@
 var assert = require('assert'),
     path = require('path'),
     fs = require('fs'),
-    NetRC = require('..').NetRC;
+    NetRC = require('..').NetRC,
+    pkg = require('../package.json');
 
 describe('netrc', function () {
 
   var netrc,
       inputFilename,
       emptyFilename,
-      outputFilename;
+      outputFilename,
+      privateFilename;
 
   beforeEach(function () {
     netrc = new NetRC();
     inputFilename = path.join(__dirname, '.netrc');
     outputFilename = path.join(__dirname, '.netrc-modified');
     emptyFilename = path.join(__dirname, '.netrc-empty');
+    privateFilename = path.join(__dirname, '.netrc-private');
     fs.writeFileSync(outputFilename, fs.readFileSync(inputFilename, { encoding: 'utf8' }));
   });
 
@@ -112,5 +115,28 @@ describe('netrc', function () {
 
     assert.equal(fs.readFileSync(outputFilename, { encoding: 'utf8' }), modified);
   });
+
+  it("checks if the input netrc file exists and is readable", function () {
+    netrc.file(inputFilename);
+    var isConfigReadable = netrc.isConfigReadable();
+    assert.equal(isConfigReadable, true);
+  })
+
+  it("checks if the non-existing input netrc file exists and is readable", function () {
+    netrc.file('.netrc-non-existing-' + (Math.round(Math.random() * 10000)));
+    var isConfigReadable = netrc.isConfigReadable();
+    assert.equal(isConfigReadable, false);
+  })
+
+  if (pkg.config.test.permissions) {
+    it("checks if the non-existing input netrc file exists and is readable", function () {
+      netrc.file(privateFilename);
+      var isConfigReadable = netrc.isConfigReadable();
+      if (isConfigReadable === true) {
+        console.log('ATTENTION: Make sure to change the owner of the .netrc-private and the mode to 0600.');
+      }
+      assert.equal(isConfigReadable, false);
+    })
+  }
 
 });

@@ -26,6 +26,16 @@ NetRC.prototype.hasHost = function (hostname) {
     return !!this.machines[hostname]
 };
 
+NetRC.prototype.isConfigReadable = function() {
+    try {
+        var fd = fs.openSync(this.filename, 'r');
+        fs.closeSync(fd);
+    } catch (e) {
+        return false;
+    }
+    return true;
+};
+
 NetRC.prototype.read = function() {
     if (!fs.existsSync(this.filename)) this.error("File does not exist: " + this.filename);
     this.machines = {};
