@@ -10,11 +10,11 @@ function NetRC(filename) {
     this.comments = {};
 }
 
-NetRC.prototype.file = function(filename) {
+NetRC.prototype.file = function (filename) {
     this.filename = filename;
 };
 
-NetRC.prototype.host = function(hostname) {
+NetRC.prototype.host = function (hostname) {
     if(!this.hasHost(hostname)) throw new NetRCError("Machine " + hostname + " not found in " + this.filename, 'NOMACHINE');
     return this.machines[hostname];
 };
@@ -26,7 +26,7 @@ NetRC.prototype.hasHost = function (hostname) {
     return !!this.machines[hostname];
 };
 
-NetRC.prototype.read = function() {
+NetRC.prototype.read = function () {
     var data;
     this.machines = {};
 
@@ -71,7 +71,7 @@ NetRC.prototype.read = function() {
     }
 };
 
-NetRC.prototype.write = function() {
+NetRC.prototype.write = function () {
     var data = "",
         lines = [],
         machines = [];
@@ -122,7 +122,7 @@ NetRC.prototype.addMachine = function (hostname, options) {
 };
 
 // Allow spaces and other weird characters in passwords by supporting \xHH
-NetRC.prototype.unescape = function(s) {
+NetRC.prototype.unescape = function (s) {
     var match = /\\x([0-9a-fA-F]{2})/.exec(s);
     if (match) {
         s = s.substr(0,match.index) +
@@ -132,7 +132,7 @@ NetRC.prototype.unescape = function(s) {
     return s;
 };
 
-function NetRCError(message, code) {
+function NetRCError (message, code) {
     this.name = 'NetRCError';
     this.message = message || ".netrc Error";
     this.code = code || 'NONE';
