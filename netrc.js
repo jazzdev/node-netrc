@@ -1,5 +1,7 @@
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    NetRCError = require('./lib/netrc-error'),
+    Machine = require('./lib/machine');
 
 exports = module.exports = new NetRC();
 module.exports.NetRC = NetRC;
@@ -131,25 +133,6 @@ NetRC.prototype.unescape = function (s) {
     }
     return s;
 };
-
-function NetRCError (message, code) {
-    this.name = 'NetRCError';
-    this.message = message || ".netrc Error";
-    this.code = code || 'NONE';
-    this.stack = (new Error()).stack;
-}
-
-NetRCError.prototype = Object.create(Error.prototype);
-NetRCError.prototype.constructor = NetRCError;
-
-function Machine(index) {
-    this.index = index || 0;
-    this.machine = null;
-    this.login = null;
-    this.password = null;
-    this.account = null;
-    this.macdef = null;
-}
 
 function insertInto(str, ins, at) {
     return [str.slice(0, at), ins, str.slice(at)].join('');
