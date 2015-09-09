@@ -116,27 +116,28 @@ describe('netrc', function () {
     assert.equal(fs.readFileSync(outputFilename, { encoding: 'utf8' }), modified);
   });
 
-  it("checks if the input netrc file exists and is readable", function () {
-    netrc.file(inputFilename);
-    var isConfigReadable = netrc.isConfigReadable();
-    assert.equal(isConfigReadable, true);
-  })
+  it("checks if the non-existing input netrc file exists and is readable", function (done) {
+    var filename = '.netrc-non-existing-' + (Math.round(Math.random() * 10000));
+    netrc.file(filename);
 
-  it("checks if the non-existing input netrc file exists and is readable", function () {
-    netrc.file('.netrc-non-existing-' + (Math.round(Math.random() * 10000)));
-    var isConfigReadable = netrc.isConfigReadable();
-    assert.equal(isConfigReadable, false);
-  })
+    netrc.error = function (e) {
+      assert.equal(e, "File does not exist: " + filename);
+      done();
+    };
+
+    netrc.read();
+  });
 
   if (pkg.config.test.permissions) {
-    it("checks if the existing input netrc file is not readable due to permissions", function () {
+    it("checks if the existing input netrc file is not readable due to permissions", function (done) {
       netrc.file(privateFilename);
-      var isConfigReadable = netrc.isConfigReadable();
-      if (isConfigReadable === true) {
-        console.log('ATTENTION: Make sure to change the owner of the .netrc-private and the mode to 0600.');
-      }
-      assert.equal(isConfigReadable, false);
-    })
+      netrc.error = function (e) {
+        assert.equal(e, "EACCES, permission denied '" + privateFilename + "'");
+        done();
+      };
+      netrc.read();
+      console.log('ATTENTION: Make sure to change the owner of the .netrc-private and the mode to 0600.');
+    });
   }
 
 });

@@ -15,7 +15,7 @@ NetRC.prototype.file = function(filename) {
 };
 
 NetRC.prototype.host = function(hostname) {
-    if(!this.hasHost(hostname)) this.error("Machine " + hostname + " not found in " + this.filename);
+    if(!this.hasHost(hostname)) return this.error("Machine " + hostname + " not found in " + this.filename);
     return this.machines[hostname];
 };
 
@@ -26,20 +26,18 @@ NetRC.prototype.hasHost = function (hostname) {
     return !!this.machines[hostname]
 };
 
-NetRC.prototype.isConfigReadable = function() {
-    try {
-        var fd = fs.openSync(this.filename, 'r');
-        fs.closeSync(fd);
-    } catch (e) {
-        return false;
-    }
-    return true;
-};
-
 NetRC.prototype.read = function() {
-    if (!fs.existsSync(this.filename)) this.error("File does not exist: " + this.filename);
+    var data;
     this.machines = {};
-    var data = fs.readFileSync(this.filename, { encoding: 'utf8' });
+
+    try {
+        data = fs.readFileSync(this.filename, { encoding: 'utf8' });
+    } catch(e) {
+        if(e.code === 'ENOENT') {
+            return this.error("File does not exist: " + this.filename);
+        }
+        return this.error(e.message || "Error while reading file: " + this.filename);
+    }
 
     // Remove comments
     var lines = data.split('\n');
@@ -113,7 +111,7 @@ NetRC.prototype.addMachine = function (hostname, options) {
         maxIndex = Object.keys(self.machines).length || 0,
         machine;
 
-    if (this.machines[hostname]) this.error("Machine " + hostname + " already exists in " + this.filename);
+    if (this.machines[hostname]) return this.error("Machine " + hostname + " already exists in " + this.filename);
 
     machine = new Machine(maxIndex + 1);
 
