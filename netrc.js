@@ -34,17 +34,7 @@ NetRC.prototype.read = function () {
         throw new NetRCError(e.message, e.code);
     }
 
-    // Remove comments
-    var lines = data.split('\n');
-    for (var n in lines) {
-        var i = lines[n].indexOf('#');
-        if (i > -1) {
-            this.comments[n] = {};
-            this.comments[n][i] = lines[n].substring(i);
-            lines[n] = lines[n].substring(0,i);
-        }
-    }
-    data = lines.join('\n');
+    data = this.stripComments(data);
 
     var tokens = data.split(/[ \t\n\r]+/);
     var machine;
@@ -60,13 +50,40 @@ NetRC.prototype.read = function () {
                 machine = new Machine(index++);
             }
         } else {
-            machine[key] = this.unescape(tokens[i]);
+            machine[key] = unescape(tokens[i]);
             key = null;
         }
     }
     if (machine && machine.machine) {
         this.machines[machine.machine] = machine;
     }
+};
+
+NetRC.prototype.stripComments = function (data) {
+    var lines = data.split('\n');
+
+    for (var n in lines) {
+        var i = lines[n].indexOf('#');
+        if (i > -1) {
+            this.comments[n] = {};
+            this.comments[n][i] = lines[n].substring(i);
+            lines[n] = lines[n].substring(0,i);
+        }
+    }
+
+    return lines.join('\n');  
+};
+
+NetRC.prototype.insertComments = function (data) {
+    var lines = data.split('\n');
+
+    for(var lineNumber in this.comments) {
+        for(var charNumber in this.comments[lineNumber]) {
+            lines[lineNumber] = insertInto(lines[lineNumber], this.comments[lineNumber][charNumber], charNumber);
+        }
+    }
+
+    return lines.join('\n');
 };
 
 NetRC.prototype.write = function () {
@@ -79,16 +96,10 @@ NetRC.prototype.write = function () {
     }
 
     machines.forEach(function (machine) {
-        lines = lines.concat(machine.outputLines());
+        lines.push(machine.output());
     });
 
-    for(var lineNumber in this.comments) {
-        for(var charNumber in this.comments[lineNumber]) {
-            lines[lineNumber] = insertInto(lines[lineNumber], this.comments[lineNumber][charNumber], charNumber);
-        }
-    }
-
-    data = lines.join('\n');
+    data = this.insertComments(lines.join('\n'));
 
     fs.writeFileSync(this.filename, data);
 };
@@ -116,7 +127,7 @@ NetRC.prototype.addMachine = function (hostname, options) {
 };
 
 // Allow spaces and other weird characters in passwords by supporting \xHH
-NetRC.prototype.unescape = function (s) {
+function unescape(s) {
     var match = /\\x([0-9a-fA-F]{2})/.exec(s);
     if (match) {
         s = s.substr(0,match.index) +
