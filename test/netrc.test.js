@@ -1,20 +1,23 @@
 var assert = require('assert'),
     path = require('path'),
     fs = require('fs'),
-    NetRC = require('..').NetRC;
+    NetRC = require('..').NetRC,
+    pkg = require('../package.json');
 
 describe('netrc', function () {
 
   var netrc,
       inputFilename,
       emptyFilename,
-      outputFilename;
+      outputFilename,
+      privateFilename;
 
   beforeEach(function () {
     netrc = new NetRC();
     inputFilename = path.join(__dirname, '.netrc');
     outputFilename = path.join(__dirname, '.netrc-modified');
     emptyFilename = path.join(__dirname, '.netrc-empty');
+    privateFilename = path.join(__dirname, '.netrc-private');
     fs.writeFileSync(outputFilename, fs.readFileSync(inputFilename, { encoding: 'utf8' }));
   });
 
@@ -112,5 +115,29 @@ describe('netrc', function () {
 
     assert.equal(fs.readFileSync(outputFilename, { encoding: 'utf8' }), modified);
   });
+
+  it("checks if the non-existing input netrc file exists and is readable", function (done) {
+    var filename = '.netrc-non-existing-' + (Math.round(Math.random() * 10000));
+    netrc.file(filename);
+
+    netrc.error = function (e) {
+      assert.equal(e, "File does not exist: " + filename);
+      done();
+    };
+
+    netrc.read();
+  });
+
+  if (pkg.config.test.permissions) {
+    it("checks if the existing input netrc file is not readable due to permissions", function (done) {
+      netrc.file(privateFilename);
+      netrc.error = function (e) {
+        assert.equal(e, "EACCES, permission denied '" + privateFilename + "'");
+        done();
+      };
+      netrc.read();
+      console.log('ATTENTION: Make sure to change the owner of the .netrc-private and the mode to 0600.');
+    });
+  }
 
 });
