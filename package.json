@@ -1,0 +1,42 @@
+{
+  "name": "netrc-rw",
+  "version": "1.0.0",
+  "description": ".netrc reader and writer",
+  "main": "netrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/treygriffith/netrc-rw.git"
+  },
+  "keywords": [
+    "netrc"
+  ],
+  "config": {
+    "test": {
+      "permissions": false
+    }
+  },
+  "author": {
+    "name": "JD Brennan",
+    "email": "jazzdev@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Trey Griffith",
+      "email": "trey@tgriff3.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/treygriffith/netrc-rw/issues"
+  },
+  "homepage": "https://github.com/treygriffith/netrc-rw",
+  "devDependencies": {
+    "mocha": "^2.2.4"
+  }
+}
