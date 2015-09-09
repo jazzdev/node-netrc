@@ -7,14 +7,10 @@ exports = module.exports = new NetRC();
 module.exports.NetRC = NetRC;
 
 function NetRC(filename) {
-    this.file(filename || path.join(process.env.HOME, ".netrc"));
+    this.filename = filename || path.join(process.env.HOME, ".netrc");
     this.machines = null;
     this.comments = {};
 }
-
-NetRC.prototype.file = function (filename) {
-    this.filename = filename;
-};
 
 NetRC.prototype.host = function (hostname) {
     if(!this.hasHost(hostname)) throw new NetRCError("Machine " + hostname + " not found in " + this.filename, 'NOMACHINE');

@@ -24,13 +24,13 @@ describe('netrc', function () {
   it("changes the default filename", function () {
     assert.equal(netrc.filename, process.env.HOME + "/.netrc");
 
-    netrc.file(inputFilename);
+    netrc.filename = inputFilename;
 
     assert.equal(netrc.filename, inputFilename);
   });
 
   it("reads the .netrc file", function () {
-    netrc.file(inputFilename);
+    netrc.filename = inputFilename;
 
     assert.equal(netrc.host("code.example.com").login, "alice@code.example.com");
     assert.equal(netrc.host("code.example.com").password, "86801bc8abbffd7fa4f203329ba55c4043f4db78");
@@ -41,20 +41,20 @@ describe('netrc', function () {
   });
 
   it("reads an empty .netrc file", function () {
-    netrc.file(emptyFilename);
+    netrc.filename = emptyFilename;
     netrc.read();
     assert.deepEqual(netrc.machines, {});
   });
 
   it("knows if a machine is in the .netrc", function () {
-    netrc.file(inputFilename);
+    netrc.filename = inputFilename;
 
     assert.equal(netrc.hasHost("code.example.com"), true);
     assert.equal(netrc.hasHost("blarg.com"), false);
   });
 
   it("adds a machine to the .netrc representation", function () {
-    netrc.file(inputFilename);
+    netrc.filename = inputFilename;
 
     netrc.addMachine("new.example.com", {
       login: "alice@new.example.com",
@@ -66,17 +66,17 @@ describe('netrc', function () {
   });
 
   it("writes the .netrc file", function () {
-    netrc.file(inputFilename);
+    netrc.filename = inputFilename;
     netrc.read();
 
-    netrc.file(outputFilename);
+    netrc.filename = outputFilename;
     netrc.write();
 
     assert.equal(fs.readFileSync(outputFilename, { encoding: 'utf8' }), fs.readFileSync(inputFilename, { encoding: 'utf8' }));
   });
 
   it("modifies and writes the .netrc file", function () {
-    netrc.file(inputFilename);
+    netrc.filename = inputFilename;
 
     var original = fs.readFileSync(inputFilename, { encoding: 'utf8' }),
         modified = original +
@@ -89,14 +89,14 @@ describe('netrc', function () {
       password: "p@ssword"
     });
 
-    netrc.file(outputFilename);
+    netrc.filename = outputFilename;
     netrc.write();
 
     assert.equal(fs.readFileSync(outputFilename, { encoding: 'utf8' }), modified);
   });
 
   it("modifies and writes originally empty .netrc file", function () {
-    netrc.file(emptyFilename);
+    netrc.filename = emptyFilename;
     netrc.read();
 
     var original = '',
@@ -110,7 +110,7 @@ describe('netrc', function () {
       password: "p@ssword"
     });
 
-    netrc.file(outputFilename);
+    netrc.filename = outputFilename;
     netrc.write();
 
     assert.equal(fs.readFileSync(outputFilename, { encoding: 'utf8' }), modified);
@@ -118,7 +118,7 @@ describe('netrc', function () {
 
   it("checks if the non-existing input netrc file exists and is readable", function (done) {
     var filename = '.netrc-non-existing-' + (Math.round(Math.random() * 10000));
-    netrc.file(filename);
+    netrc.filename = filename;
 
     try {
       netrc.read();
@@ -130,7 +130,7 @@ describe('netrc', function () {
 
   if (pkg.config.test.permissions) {
     it("checks if the existing input netrc file is not readable due to permissions", function (done) {
-      netrc.file(privateFilename);
+      netrc.filename = privateFilename;
 
       try {
         netrc.read();
