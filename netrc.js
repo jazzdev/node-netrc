@@ -4,8 +4,8 @@ var fs = require('fs'),
 exports = module.exports = new NetRC();
 module.exports.NetRC = NetRC;
 
-function NetRC() {
-    this.filename = path.join(process.env.HOME, ".netrc");
+function NetRC(filename) {
+    this.file(filename || path.join(process.env.HOME, ".netrc"));
     this.machines = null;
     this.comments = {};
 }
