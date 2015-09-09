@@ -15,7 +15,7 @@ NetRC.prototype.file = function(filename) {
 };
 
 NetRC.prototype.host = function(hostname) {
-    if(!this.hasHost(hostname)) return this.error("Machine " + hostname + " not found in " + this.filename);
+    if(!this.hasHost(hostname)) throw new NetRCError("Machine " + hostname + " not found in " + this.filename, 'NOMACHINE');
     return this.machines[hostname];
 };
 
@@ -23,7 +23,7 @@ NetRC.prototype.hasHost = function (hostname) {
     if (this.machines === null) {
         this.read();
     }
-    return !!this.machines[hostname]
+    return !!this.machines[hostname];
 };
 
 NetRC.prototype.read = function() {
@@ -33,10 +33,7 @@ NetRC.prototype.read = function() {
     try {
         data = fs.readFileSync(this.filename, { encoding: 'utf8' });
     } catch(e) {
-        if(e.code === 'ENOENT') {
-            return this.error("File does not exist: " + this.filename);
-        }
-        return this.error(e.message || "Error while reading file: " + this.filename);
+        throw new NetRCError(e.message, e.code);
     }
 
     // Remove comments
@@ -111,7 +108,7 @@ NetRC.prototype.addMachine = function (hostname, options) {
         maxIndex = Object.keys(self.machines).length || 0,
         machine;
 
-    if (this.machines[hostname]) return this.error("Machine " + hostname + " already exists in " + this.filename);
+    if (this.machines[hostname]) throw new NetRCError("Machine " + hostname + " already exists in " + this.filename, 'MACHINEEXISTS');
 
     machine = new Machine(maxIndex + 1);
 
@@ -135,10 +132,15 @@ NetRC.prototype.unescape = function(s) {
     return s;
 };
 
-NetRC.prototype.error = function(message) {
-    console.error("netrc: Error:", message);
-    process.exit(1);
-};
+function NetRCError(message, code) {
+    this.name = 'NetRCError';
+    this.message = message || ".netrc Error";
+    this.code = code || 'NONE';
+    this.stack = (new Error()).stack;
+}
+
+NetRCError.prototype = Object.create(Error.prototype);
+NetRCError.prototype.constructor = NetRCError;
 
 function Machine(index) {
     this.index = index || 0;

@@ -120,22 +120,25 @@ describe('netrc', function () {
     var filename = '.netrc-non-existing-' + (Math.round(Math.random() * 10000));
     netrc.file(filename);
 
-    netrc.error = function (e) {
-      assert.equal(e, "File does not exist: " + filename);
+    try {
+      netrc.read();
+    } catch(e) {
+      assert.equal(e.code, 'ENOENT');
       done();
-    };
-
-    netrc.read();
+    }
   });
 
   if (pkg.config.test.permissions) {
     it("checks if the existing input netrc file is not readable due to permissions", function (done) {
       netrc.file(privateFilename);
-      netrc.error = function (e) {
-        assert.equal(e, "EACCES, permission denied '" + privateFilename + "'");
-        done();
-      };
-      netrc.read();
+
+      try {
+        netrc.read();
+      } catch(e) {
+        assert.equal(e.code, 'EACCES');
+        return done();
+      }
+      
       console.log('ATTENTION: Make sure to change the owner of the .netrc-private and the mode to 0600.');
     });
   }
