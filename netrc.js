@@ -83,11 +83,7 @@ NetRC.prototype.write = function () {
     }
 
     machines.forEach(function (machine) {
-        lines.push("machine " + machine.machine);
-        ['login', 'password', 'account', 'macdef'].forEach(function (key) {
-            if(machine[key])
-                lines.push("  " + key + " " + machine[key]);
-        });
+        lines = lines.concat(machine.outputLines());
     });
 
     for(var lineNumber in this.comments) {
