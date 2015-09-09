@@ -116,16 +116,13 @@ describe('netrc', function () {
     assert.equal(fs.readFileSync(outputFilename, { encoding: 'utf8' }), modified);
   });
 
-  it("checks if the non-existing input netrc file exists and is readable", function (done) {
+  it("reads a non-existing input netrc file as an empty one", function () {
     var filename = '.netrc-non-existing-' + (Math.round(Math.random() * 10000));
     netrc.filename = filename;
 
-    try {
-      netrc.read();
-    } catch(e) {
-      assert.equal(e.code, 'ENOENT');
-      done();
-    }
+    netrc.read();
+
+    assert.deepEqual(netrc.machines, {});
   });
 
   if (pkg.config.test.permissions) {

@@ -31,11 +31,18 @@ NetRC.prototype.read = function () {
     try {
         data = fs.readFileSync(this.filename, { encoding: 'utf8' });
     } catch(e) {
-        throw new NetRCError(e.message, e.code);
+        if(e.code === 'ENOENT') {
+            // treat a non-existent file as an empty one
+            data = "";
+        } else {
+            throw new NetRCError(e.message, e.code);
+        }
     }
 
-    data = this.stripComments(data);
+    this.parse(this.stripComments(data));
+};
 
+NetRC.prototype.parse = function (data) {
     var tokens = data.split(/[ \t\n\r]+/);
     var machine;
     var key = null;
@@ -135,7 +142,7 @@ function unescape(s) {
             s.substr(match.index+4);
     }
     return s;
-};
+}
 
 function insertInto(str, ins, at) {
     return [str.slice(0, at), ins, str.slice(at)].join('');
