@@ -24,6 +24,28 @@ NetRC.prototype.hasHost = function (hostname) {
     return !!this.machines[hostname];
 };
 
+NetRC.prototype.addHost = function (hostname, options) {
+    if (this.machines === null) {
+        this.read();
+    }
+
+    var self = this,
+        maxIndex = Object.keys(self.machines).length || 0,
+        machine;
+
+    if (this.machines[hostname]) throw new NetRCError("Machine " + hostname + " already exists in " + this.filename, 'MACHINEEXISTS');
+
+    machine = new Machine(maxIndex + 1);
+
+    machine.machine = hostname;
+
+    for(var key in options) {
+        machine[key] = options[key];
+    }
+
+    this.machines[machine.machine] = machine;
+};
+
 NetRC.prototype.read = function () {
     var data;
     this.machines = {};
@@ -109,28 +131,6 @@ NetRC.prototype.write = function () {
     data = this.insertComments(lines.join('\n'));
 
     fs.writeFileSync(this.filename, data);
-};
-
-NetRC.prototype.addMachine = function (hostname, options) {
-    if (this.machines === null) {
-        this.read();
-    }
-
-    var self = this,
-        maxIndex = Object.keys(self.machines).length || 0,
-        machine;
-
-    if (this.machines[hostname]) throw new NetRCError("Machine " + hostname + " already exists in " + this.filename, 'MACHINEEXISTS');
-
-    machine = new Machine(maxIndex + 1);
-
-    machine.machine = hostname;
-
-    for(var key in options) {
-        machine[key] = options[key];
-    }
-
-    this.machines[machine.machine] = machine;
 };
 
 // Allow spaces and other weird characters in passwords by supporting \xHH

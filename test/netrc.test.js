@@ -56,7 +56,7 @@ describe('netrc', function () {
   it("adds a machine to the .netrc representation", function () {
     netrc.filename = inputFilename;
 
-    netrc.addMachine("new.example.com", {
+    netrc.addHost("new.example.com", {
       login: "alice@new.example.com",
       password: "p@ssword"
     });
@@ -84,7 +84,7 @@ describe('netrc', function () {
           "  login alice@new.example.com\n" +
           "  password p@ssword";
 
-    netrc.addMachine("new.example.com", {
+    netrc.addHost("new.example.com", {
       login: "alice@new.example.com",
       password: "p@ssword"
     });
@@ -105,7 +105,7 @@ describe('netrc', function () {
           "  login alice@new.example.com\n" +
           "  password p@ssword";
 
-    netrc.addMachine("new.example.com", {
+    netrc.addHost("new.example.com", {
       login: "alice@new.example.com",
       password: "p@ssword"
     });
