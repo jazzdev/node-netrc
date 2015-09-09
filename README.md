@@ -17,13 +17,17 @@ or
 Usage
 -----
 
-    var netrc = require('netrc');
+    var NetRC = require('netrc');
     
     # read
     var pass = netrc.host('github.com').password;
 
-    # write
+    # edit
     netrc.host('github.com').password = "mynewpass";
+    netrc.write();
+
+    # add new
+    netrc.addHost('api.github.com').password = "totallynewpass";
     netrc.write();
 
 Dependencies

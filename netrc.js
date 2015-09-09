@@ -44,6 +44,8 @@ NetRC.prototype.addHost = function (hostname, options) {
     }
 
     this.machines[machine.machine] = machine;
+
+    return machine;
 };
 
 NetRC.prototype.read = function () {
